@@ -59,7 +59,7 @@ e-learning-platform/
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/your-username/e-learning-platform.git
+git clone https://github.com/Rathanak-Phan/e-learning-platform-pp.git
 cd e-learning-platform
 ```
 
