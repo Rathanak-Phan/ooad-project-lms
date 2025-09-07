@@ -1,4 +1,4 @@
-# 📘 E-Learning Platform Starter
+# 📘 E-Learning Platform (Project Practicum)
 
 A full-stack boilerplate for building an **E-Learning Platform** with:
 
