@@ -15,11 +15,12 @@ app.get("/", (req, res) => {
   //     skills : ["JavaScript", "React", "Node.js"],
   // });
 
-    res.send(`
-        <script>
-            window.location.href = "https://rathanak-phan.vercel.app/";
-        </script>
-    `);
+    // res.send(`
+    //     <script>
+    //         window.location.href = "https://rathanak-phan.vercel.app/";
+    //     </script>
+    // `);
+    res.send("Wellcome to backend");
 });
 
 // app.get("/about", (req, res) =>{
