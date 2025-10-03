@@ -21,20 +21,8 @@ app.get("/user/:id", (req, res) => {
 
 // Example: http://localhost:3000/data with POST method(json body)
 const courses = [
-  {
-    id: "1",
-    name: "Web development",
-    description:
-      "lorem as ES module because module syntax was detected. This incurs a performance overhead",
-    rate: 12,
-  },
-  {
-    id: "2",
-    name: "Mobile app",
-    description:
-      "lorem as ES module because module syntax was detected. This incurs a performance overhead",
-    rate: 13,
-  },
+  { id: "1", name: "Web development", description: "Learn web dev", rate: 12 },
+  { id: "2", name: "Mobile app", description: "Learn mobile dev", rate: 13 },
 ];
 
 // GET course by ID
@@ -46,8 +34,33 @@ app.get("/course/:id", (req, res) => {
     return res.status(404).json({ message: "Course not found" });
   }
 
-  res.json(course); 
+  res.json(course);
 });
+
+// POST request to add course
+app.post("/course", (req, res) => {
+  const { name, description, rate } = req.body; // ✅ now req.body will not be undefined
+
+  if (!name || !description || !rate) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
+  const newCourse = {
+    id: String(courses.length + 1),
+    name,
+    description,
+    rate,
+  };
+
+  courses.push(newCourse);
+
+  res.status(201).json({
+    message: "Course added successfully",
+    course: newCourse,
+  });
+});
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
