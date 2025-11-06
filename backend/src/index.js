@@ -39,7 +39,7 @@ app.get("/course/:id", (req, res) => {
 
 // POST request to add course
 app.post("/course", (req, res) => {
-  const { name, description, rate } = req.body; // ✅ now req.body will not be undefined
+  const { name, description, rate } = req.body;
 
   if (!name || !description || !rate) {
     return res.status(400).json({ message: "Missing fields" });
@@ -60,6 +60,18 @@ app.post("/course", (req, res) => {
   });
 });
 
+// POST route to add a new course
+app.post("/me", (req, res) => {
+    const newCourse = req.body;
+    newCourse.id = String(courses.length + 1);
+    courses.push(newCourse);
+
+    console.log("Received course:", newCourse);  // Log to see the data
+    res.status(201).json({
+        message: "Course added successfully",
+        courses: courses,
+    });
+});
 
 
 const PORT = process.env.PORT || 3000;
