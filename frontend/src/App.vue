@@ -1,10 +1,9 @@
-<script setup>
-
-</script>
-
 <template>
   <div>
-    <p class="underline text-center">Hello frontend</p>
+    <router-view></router-view>
   </div>
 </template>
 
+<script>
+export default {};
+</script>
