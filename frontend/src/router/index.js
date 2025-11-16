@@ -1,22 +1,94 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LoginForm from "../views/LoginForm.vue";
-import RegisterForm from "../views/RegisterForm.vue"; // import your register page
-import StudentDashboard from "../views/StudentDashboard.vue";
-import InstructorDashboard from "../views/InstructorDashboard.vue";
-import AdminDashboard from "../views/AdminDashboard.vue";
+
+import UserLogin from "../views/auth/UserLogin.vue";
+import AdminLogin from "../views/auth/AdminLogin.vue";
+import Register from "../views/auth/Register.vue";
+
+import Home from "../views/Home.vue";
+import StudentDashboard from "../views/student/StudentDashboard.vue";
+import InstructorDashboard from "../views/instructor/InstructorDashboard.vue";
+import AdminDashboard from "../views/admin/AdminDashboard.vue";
+
+import Courses from "../views/instructor/Courses.vue";
+import Assignments from "../views/instructor/Assignments.vue";
+import Quizzes from "../views/instructor/Quizzes.vue";
+import Profile from "../views/instructor/Profile.vue";
 
 const routes = [
-  { path: "/", redirect: "/login" },
-  { path: "/login", name: "Login", component: LoginForm },
-  { path: "/register", name: "Register", component: RegisterForm }, // add this
-  { path: "/student", name: "StudentDashboard", component: StudentDashboard },
-  { path: "/instructor", name: "InstructorDashboard", component: InstructorDashboard },
-  { path: "/admin", name: "AdminDashboard", component: AdminDashboard },
+  // ---- Student Home Page ----
+  {
+    path: "/",
+    name: "Home",
+    component: Home,
+    meta: { role: "student" },
+  },
+
+  // Public
+  { path: "/login", name: "Login", component: UserLogin },
+  { path: "/admin/login", name: "AdminLogin", component: AdminLogin },
+  { path: "/register", name: "Register", component: Register },
+
+  // Student dashboard
+  {
+    path: "/student/dashboard",
+    name: "StudentDashboard",
+    component: StudentDashboard,
+    meta: { role: "student" },
+  },
+
+  // Instructor
+  {
+    path: "/instructor/",
+    name: "InstructorDashboard",
+    component: InstructorDashboard,
+    meta: { role: "instructor" },
+    children: [
+      { path: "", component: () => import("../views/instructor/Overview.vue") },
+      { path: "courses", component: Courses },
+      { path: "assignments", component: Assignments },
+      { path: "quizzes", component: Quizzes },
+      { path: "profile", component: Profile },
+    ],
+  },
+
+  // Admin
+  {
+    path: "/admin",
+    name: "AdminDashboard",
+    component: AdminDashboard,
+    meta: { role: "admin" },
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+// Role protection
+router.beforeEach((to, from, next) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
+
+  if (to.path === "/login" && user && token) {
+    // Already logged in → redirect based on role
+    if (user.role === "student") return next("/");
+    if (user.role === "instructor") return next("/instructor/dashboard");
+    if (user.role === "admin") return next("/admin");
+  }
+
+  if (to.meta.role) {
+    if (!user || !token) return next("/login");
+
+    if (to.meta.role !== user.role) {
+      if (user.role === "student") return next("/");
+      if (user.role === "instructor") return next("/instructor/dashboard");
+      if (user.role === "admin") return next("/admin");
+      return next("/login");
+    }
+  }
+
+  next();
 });
 
 export default router;

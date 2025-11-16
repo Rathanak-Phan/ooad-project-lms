@@ -1,4 +1,4 @@
-import db from "./db.js"; // ✔ correct import with .js extension
+import db from "./db.js";
 
 async function testConnection() {
   try {
@@ -7,7 +7,7 @@ async function testConnection() {
   } catch (err) {
     console.error("❌ Database connection failed:", err);
   } finally {
-    db.end(); // close pool
+    db.end();
   }
 }
 
