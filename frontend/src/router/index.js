@@ -17,6 +17,7 @@ import AdminCreateUser from "../views/admin/AdminCreateUser.vue";
 import AllUsers from "../views/admin/AllUsers.vue";
 import Setting from "../views/admin/Setting.vue";
 import NotFound from "../components/NotFound.vue";
+import StudentAssignmentSubmit from "../views/student/StudentAssignmentSubmit.vue";
 
 const routes = [
   // ---- Student Home Page ----
@@ -39,13 +40,18 @@ const routes = [
     component: StudentDashboard,
     meta: { role: "student" },
   },
+  {
+    path: "/student/assignment/:id",
+    name: "StudentAssignmentSubmit",
+    component: StudentAssignmentSubmit,
+  },
 
   // Instructor
   {
     path: "/instructor/",
     name: "InstructorDashboard",
     component: InstructorDashboard,
-    meta: { role: "instructor" },
+    meta: { role: "instructor", hideLayout: true },
     children: [
       { path: "", component: () => import("../views/instructor/Overview.vue") },
       { path: "courses", component: Courses },
@@ -60,7 +66,7 @@ const routes = [
     path: "/admin",
     name: "AdminDashboard",
     component: AdminDashboard,
-    meta: { role: "admin" },
+    meta: { role: "admin", hideLayout: true },
     children: [
       { path: "", component: () => import("../views/admin/Overview.vue") },
       { path: "/admin/create-user", component: AdminCreateUser },
