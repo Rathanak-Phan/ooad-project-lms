@@ -24,7 +24,7 @@
         </p>
 
         <button
-          @click="$router.push('/student/dashboard')"
+          @click="$router.push('/student/')"
           class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
         >
           Go to Student Dashboard →
@@ -60,7 +60,7 @@
           Manage your courses and create new learning materials.
         </p>
         <button
-          @click="$router.push('/instructor/dashboard')"
+          @click="$router.push('/instructor/')"
           class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700"
         >
           Go to Instructor Dashboard →

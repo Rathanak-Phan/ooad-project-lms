@@ -13,6 +13,10 @@ import Courses from "../views/instructor/Courses.vue";
 import Assignments from "../views/instructor/Assignments.vue";
 import Quizzes from "../views/instructor/Quizzes.vue";
 import Profile from "../views/instructor/Profile.vue";
+import AdminCreateUser from "../views/admin/AdminCreateUser.vue";
+import AllUsers from "../views/admin/AllUsers.vue";
+import Setting from "../views/admin/Setting.vue";
+import NotFound from "../components/NotFound.vue";
 
 const routes = [
   // ---- Student Home Page ----
@@ -30,7 +34,7 @@ const routes = [
 
   // Student dashboard
   {
-    path: "/student/dashboard",
+    path: "/student/",
     name: "StudentDashboard",
     component: StudentDashboard,
     meta: { role: "student" },
@@ -57,6 +61,19 @@ const routes = [
     name: "AdminDashboard",
     component: AdminDashboard,
     meta: { role: "admin" },
+    children: [
+      { path: "", component: () => import("../views/admin/Overview.vue") },
+      { path: "/admin/create-user", component: AdminCreateUser },
+      { path: "/admin/users", component: AllUsers },
+      { path: "/admin/settings", component: Setting },
+    ],
+  },
+
+  // 404 fallback route
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: NotFound,
   },
 ];
 
