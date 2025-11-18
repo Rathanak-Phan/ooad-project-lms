@@ -1,23 +1,26 @@
+// routes/adminRoutes.js
 import express from "express";
-import { createUserByAdmin, listUsers, stats } from "../controllers/adminController.js";
-import { verifyToken } from "../middlewares/verifyToken.js"; 
-import { adminOnly } from "../middlewares/adminOnly.js";     
-import { authMiddleware } from "../middlewares/authMiddleware.js";
-import { adminMiddleware } from "../middlewares/authMiddleware.js";
-import { getUsers, getStats, getActivities } from "../controllers/adminController.js";
+import {
+  createUserByAdmin,
+  getUsers,
+  getStats,
+  toggleUserStatus,
+  deleteUser,
+} from "../controllers/adminController.js";
+import { verifyToken } from "../middlewares/verifyToken.js";
+import { adminOnly } from "../middlewares/adminOnly.js";
 
 const router = express.Router();
 
-// Protect all admin routes
+// All admin routes protected
 router.use(verifyToken, adminOnly);
 
-// Admin routes
 router.post("/create-user", createUserByAdmin);
-router.get("/users", listUsers);
-router.get("/stats", stats);
+router.get("/users", getUsers);
+router.get("/stats", getStats);
 
-router.get("/users", authMiddleware, adminMiddleware, getUsers);
-router.get("/stats", authMiddleware, adminMiddleware, getStats);
-router.get("/activities", authMiddleware, adminMiddleware, getActivities);
+// New: Admin actions
+router.patch("/user/:id/toggle", toggleUserStatus);
+router.delete("/user/:id", deleteUser);
 
 export default router;

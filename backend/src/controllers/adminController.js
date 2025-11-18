@@ -1,86 +1,93 @@
-import db from "../config/db.js";
-import UserModel from "../models/User.js";
+// controllers/adminController.js
 
+import bcrypt from "bcryptjs";
+import UserModel from "../models/User.js";
+import db from "../config/db.js";
+
+// 1. Create User (Admin only)
 export const createUserByAdmin = async (req, res) => {
-  // reuse register controller logic with req.user (but simpler)
   try {
     const { name, email, password, role } = req.body;
-    if (!name || !email || !password || !role)
-      return res.status(400).json({ message: "Invalid input" });
 
-    // Prevent non-admin creating admins (should be enforced by adminOnly middleware)
-    if (role === "admin" && req.user.role !== "admin")
-      return res.status(403).json({ message: "Forbidden" });
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-    // call UserModel.createUser after hashing in authController or repeat here
-    // For simplicity, delegate to auth controller logic by calling hash here:
-    const bcrypt = await import("bcryptjs");
+    if (!["student", "instructor", "admin"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+    // Only super admin can create another admin (optional extra security)
+    if (role === "admin" && req.user.role !== "admin") {
+      return res.status(403).json({ message: "Only admins can create admins" });
+    }
+
     const hashed = await bcrypt.hash(password, 10);
-
     await UserModel.createUser(db, { name, email, password: hashed, role });
-    res.status(201).json({ message: "User created by admin", role });
+
+    res.status(201).json({ message: "User created successfully", role });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-export const listUsers = async (req, res) => {
+// 2. Get Stats
+export const getStats = async (req, res) => {
   try {
-    const users = await UserModel.listUsers(db, 100);
-    res.json({ users });
+    const [students, instructors, admins] = await Promise.all([
+      UserModel.countByRole(db, "student"),
+      UserModel.countByRole(db, "instructor"),
+      UserModel.countByRole(db, "admin"),
+    ]);
+
+    const total = students + instructors + admins;
+
+    res.json({ students, instructors, admins, total });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-export const stats = async (req, res) => {
-  try {
-    const students = await UserModel.countByRole(db, "student");
-    const instructors = await UserModel.countByRole(db, "instructor");
-    const admins = await UserModel.countByRole(db, "admin");
-    res.json({ students, instructors, admins });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// GET /api/admin/users?limit=5
+// 3. Get Users (with limit)
 export const getUsers = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
-    console.log("Fetching users with limit:", limit); // debug
-
     const users = await UserModel.listUsers(db, limit);
-    console.log("Users fetched:", users); // debug
-
-    res.json(users);
-  } catch (error) {
-    console.error("Error fetching users:", error); // show exact error
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.json({ users });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Example for stats endpoint
-export const getStats = async (req, res) => {
+// 4. Toggle Disable User
+export const toggleUserStatus = async (req, res) => {
   try {
-    const totalStudents = await UserModel.countByRole(db, "student");
-    const totalInstructors = await UserModel.countByRole(db, "instructor");
-    const totalAdmins = await UserModel.countByRole(db, "admin");
-    res.json({ totalStudents, totalInstructors, totalAdmins });
-  } catch (error) {
-    console.error("Error fetching stats:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    const { id } = req.params;
+    const user = await UserModel.findById(db, id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (user.role === "admin") return res.status(403).json({ message: "Cannot disable admin" });
+
+    await UserModel.updateUser(db, id, { disabled: !user.disabled });
+    res.json({ message: "User status updated", disabled: !user.disabled });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-export const getActivities = async (req, res) => {
+// 5. Permanently Delete User
+export const deleteUser = async (req, res) => {
   try {
-    const activities = await Activity.findAll(); // adjust for your DB
-    res.json(activities);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    const { id } = req.params;
+    const user = await UserModel.findById(db, id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (user.role === "admin") return res.status(403).json({ message: "Cannot delete admin" });
+
+    await UserModel.deleteUser(db, id);
+    res.json({ message: "User deleted permanently" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 };
