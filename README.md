@@ -22,7 +22,7 @@ Frontend
 
 Backend
 - Express with modular route/controllers
-- Mongoose models for MongoDB
+- MySQL models for MySQL
 - JWT-based auth (register/login)
 - Example routes: /api/auth, /api/courses
 
