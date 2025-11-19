@@ -186,9 +186,14 @@ Then: npm run dev
 
 ## 📜 License
 
-This project is available under the MIT License — short summary:
-You are free to use, modify, and distribute this software provided that the original license text and copyright notice are included.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-Full license text is in the LICENSE file (SPDX: MIT). If a LICENSE file is not present, add one containing the standard MIT license and an appropriate copyright line.
+This project is available under the MIT License — short summary: you may use, modify, and distribute this software provided the original license text and copyright notice are included.
+
+Click to view the full license:
+- In this repository: [LICENSE](./LICENSE)
+- On GitHub: https://github.com/Rathanak-Phan/ooad-project-lms/blob/main/LICENSE
+
+If a LICENSE file is not present, add one containing the standard MIT text and an appropriate copyright line.
 
 ---
