@@ -1,176 +1,109 @@
-# 📘 E-Learning Platform (Project Practicum)
+# 📘 OOAD (LMS) — Full‑Stack E‑Learning Boilerplate
 
-A full-stack boilerplate for building an **E-Learning Platform** with:
+A concise, production‑ready starter for a modern e‑learning platform.
 
-* **Frontend:** Vue 3 + Vite + Tailwind CSS + Pinia + Vue Router
-* **Backend:** Node.js + Express + JWT Authentication + MongoDB
-* **API Example:** User Auth (register/login) and Course CRUD
+Core stack
+- Frontend: Vue 3 + Vite + Tailwind CSS + Pinia + Vue Router
+- Backend: Node.js + Express + MongoDB + JWT authentication
+- Examples: user auth (register/login) and course CRUD endpoints
 
-This repo gives you a **starter structure** to build courses, lessons, quizzes, payments, and more.
-
----
-
-## 🚀 Features
-
-### Frontend
-
-* Vue 3 + Vite setup
-* Tailwind CSS pre-configured
-* Pinia store (state management)
-* Vue Router (routing system)
-* Axios API client
-* Example auth store (`login/logout`)
-* Example pages (`Home`, `Login`, `Courses`)
-
-### Backend
-
-* Express server with modular structure
-* MongoDB (Mongoose models)
-* JWT authentication (register/login)
-* REST API routes (`/api/auth`, `/api/courses`)
-* Example models: `User`, `Course`
+This repo gives a clear project layout and minimal examples to accelerate building courses, lessons, quizzes, payments, and more.
 
 ---
 
-## 📂 Folder Structure
+## 🚀 Highlights
+
+Frontend
+- Vue 3 + Vite rapid dev experience
+- Tailwind CSS configured
+- Pinia for state management
+- Vue Router and Axios API client
+- Example pages & auth flow (Home, Login, Courses)
+
+Backend
+- Express with modular route/controllers
+- Mongoose models for MongoDB
+- JWT-based auth (register/login)
+- Example routes: /api/auth, /api/courses
+
+---
+
+## 📂 Project Layout
 
 ```
 e-learning-platform/
-│── frontend/         # Vue 3 + Vite app
-│   ├── src/          # Vue source code
-│   ├── public/
-│   ├── package.json
-│   └── node_modules/
-│
-│── backend/          # Express API
-│   ├── src/          # API source code
-│   ├── .env          # Environment variables
-│   ├── package.json
-│   └── node_modules/
-│
-│── README.md
-│── .gitignore
+├─ frontend/         # Vue 3 + Vite frontend
+│  ├─ src/
+│  ├─ public/
+│  └─ package.json
+├─ backend/          # Express backend
+│  ├─ src/
+│  ├─ .env.example
+│  └─ package.json
+├─ .gitignore
+└─ README.md
 ```
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Quickstart
 
-### 1. Clone Repository
-
+1. Clone
 ```bash
-git clone https://github.com/Rathanak-Phan/e-learning-platform-pp.git
-cd e-learning-platform
+git clone https://github.com/Rathanak-Phan/ooad-project-lms.git
+cd ooad-project-lms
 ```
 
-### 2. Frontend Setup (Vue 3 + Vite)
-
+2. Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
+# frontend: http://localhost:5173
 ```
 
-Frontend runs at 👉 `http://localhost:5173`
-
-### 3. Backend Setup (Express API)
-
+3. Backend
 ```bash
 cd ../backend
 npm install
+cp .env.example .env
+# Edit .env and set MONGO_URI and JWT_SECRET
+npm run dev
+# backend: http://localhost:5000
 ```
 
-Create a `.env` file inside `backend/`:
-
+.env.example
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/elearning
-JWT_SECRET=supersecretkey
+MONGO_URI=mongodb://localhost:27017/e-learning
+JWT_SECRET=replace_with_strong_secret
 ```
-
-Run backend:
-
-```bash
-npm run dev
-```
-
-Backend runs at 👉 `http://localhost:5000`
 
 ---
 
-## 🔗 Connecting Frontend & Backend
+## 🔗 Connecting frontend & backend
 
-* Frontend Axios config (`frontend/src/services/api.js`):
-
+frontend/src/services/api.js
 ```js
 import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:5000/api",
+  withCredentials: true, // optional
 });
 
 export default api;
 ```
 
-* Example API request:
-
+Example usage
 ```js
-import api from "./api";
-
+import api from "./services/api";
 export const fetchCourses = () => api.get("/courses");
 ```
 
 ---
 
-## 🏗️ System Architecture
-
-```mermaid
-erDiagram
-    USER {
-        string _id PK
-        string name
-        string email
-        string passwordHash
-        string role
-    }
-
-    COURSE {
-        string _id PK
-        string title
-        string description
-        string instructorId FK
-    }
-
-    LESSON {
-        string _id PK
-        string courseId FK
-        string title
-        string content
-        string videoUrl
-    }
-
-    QUIZ {
-        string _id PK
-        string courseId FK
-        string title
-    }
-
-    ENROLLMENT {
-        string _id PK
-        string userId FK
-        string courseId FK
-        string progress
-    }
-
-    USER ||--o{ ENROLLMENT : "enrolls"
-    COURSE ||--o{ ENROLLMENT : "has"
-    COURSE ||--o{ LESSON : "contains"
-    COURSE ||--o{ QUIZ : "contains"
-    USER ||--o{ COURSE : "teaches"
-```
-
-
-💡 Tip: If you want to show the `role` ENUM in the ER diagram, you can add it as a comment or note:
+## 🏗️ System overview
 
 ```mermaid
 erDiagram
@@ -181,54 +114,81 @@ erDiagram
         string passwordHash
         string role "student | instructor | admin"
     }
-```
-
----
-
-## 🧑‍💻 Scripts
-
-From project root:
-
-* Start frontend only:
-
-  ```bash
-  cd frontend && npm run dev
-  ```
-
-* Start backend only:
-
-  ```bash
-  cd backend && npm run dev
-  ```
-
-* (Optional) Run both together (add to root `package.json`):
-
-  ```json
-  {
-    "scripts": {
-      "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+    COURSE {
+        string _id PK
+        string title
+        string description
+        string instructorId FK
     }
-  }
-  ```
+    LESSON {
+        string _id PK
+        string courseId FK
+        string title
+        string content
+        string videoUrl
+    }
+    QUIZ {
+        string _id PK
+        string courseId FK
+        string title
+    }
+    ENROLLMENT {
+        string _id PK
+        string userId FK
+        string courseId FK
+        number progress
+    }
 
-Then:
-
-```bash
-npm run dev
+    USER ||--o{ ENROLLMENT : "enrolls"
+    COURSE ||--o{ ENROLLMENT : "has"
+    COURSE ||--o{ LESSON : "contains"
+    COURSE ||--o{ QUIZ : "contains"
+    USER ||--o{ COURSE : "teaches"
 ```
 
 ---
 
-## 🛠 Future Improvements
+## 🧑‍💻 NPM scripts
 
-* [ ] Add Lesson model & API
-* [ ] Add Quiz & Submission system
-* [ ] Add Payments (Stripe/PayPal)
-* [ ] Add File/Video Upload (S3, Cloudinary, etc.)
-* [ ] Deploy to Vercel (frontend) + Render/Railway (backend)
+From project root you can run separately:
+
+- Start frontend:
+```bash
+cd frontend && npm run dev
+```
+
+- Start backend:
+```bash
+cd backend && npm run dev
+```
+
+Optional combined run (add to root package.json)
+```json
+{
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+  }
+}
+```
+Then: npm run dev
+
+---
+
+## 🛠️ Roadmap / Improvements
+
+- [ ] Lesson model & APIs
+- [ ] Quiz, submissions, grading
+- [ ] Payments (Stripe/PayPal) integration
+- [ ] File/video uploads (S3, Cloudinary)
+- [ ] CI, tests, deployment manifests (Vercel / Render / Railway)
 
 ---
 
 ## 📜 License
 
-This project is open-source under the MIT License.
+This project is available under the MIT License — short summary:
+You are free to use, modify, and distribute this software provided that the original license text and copyright notice are included.
+
+Full license text is in the LICENSE file (SPDX: MIT). If a LICENSE file is not present, add one containing the standard MIT license and an appropriate copyright line.
+
+---
